@@ -87,6 +87,31 @@ commit that.
 - You can also open and edit any file in the live directory by hand at any
   time — it's all plain Markdown.
 
+## Upgrading instructions on an already-deployed live directory
+
+`deploy.sh` is one-shot — it refuses to touch a live path that already
+exists, so it can't be used to push a later improvement out to a live copy
+that's accumulated real content. For that, use [upgrade.sh](upgrade.sh)
+instead, which only overwrites the pure-instruction file(s) in the live
+directory (currently just `CURATOR.md`) and never touches real data
+(`MEMORY.md`, `CURATION-LOG.md`, `inbox/candidates.md`, `memories/**`).
+
+Local machine → server, some folder there:
+
+1. Edit `template/CURATOR.md` (or another instruction file) in this repo,
+   commit, and push.
+2. On the server, `git pull` this repo in whatever folder it's checked out
+   to there.
+3. On the server, run `./upgrade.sh <live-path>` (e.g. `./upgrade.sh
+   ~/.ai-memory`), pointing at that server's live directory.
+
+Re-running `upgrade.sh` is always safe — it only copies files whose content
+actually changed and leaves everything else alone.
+
+If you change a `bootstrap/*.md` snippet, there's no file to sync — repaste
+the updated snippet into that machine's `~/.claude/CLAUDE.md` or
+`~/.codex/AGENTS.md` by hand, on each machine.
+
 ## Improving the template itself
 
 If you land on a better starter file, a clearer instruction, or a new
