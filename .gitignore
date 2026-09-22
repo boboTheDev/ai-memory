@@ -1,0 +1,9 @@
+# Everything under template/ is pure template content — headers and
+# instructions only, never real data — and is always safe to commit in
+# full. No exclusions needed there.
+#
+# The live data directory (created by deploy.sh, outside this repo by
+# default) is never inside this working copy, so there is nothing from
+# real usage to gitignore here. If you ever choose to point the live path
+# at a location inside this checkout instead of the recommended external
+# path, add that path here before doing so.
