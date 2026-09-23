@@ -53,6 +53,7 @@ ai-memory/                    (this repo — template + a couple of root files, 
 ├── deploy.sh                  (copies template/ + DESIGN.md → live path, once)
 ├── upgrade.sh                  (re-syncs the instruction files above later)
 ├── bootstrap/                  (snippets for each tool's global config)
+├── skills/ai-memory/SKILL.md   (shared retrieval and write workflow)
 ├── DESIGN.md                   (also deployed to the live dir — see above)
 └── README.md                   (repo-only; never deployed)
 
@@ -82,6 +83,8 @@ ai-memory/                    (this repo — template + a couple of root files, 
    into each tool's global config file (`~/.claude/CLAUDE.md` and
    `~/.codex/AGENTS.md`), replacing `<AI_MEMORY_PATH>` with the live path
    `deploy.sh` printed.
+   Install `skills/ai-memory/` in each tool's discoverable skills directory
+   if that tool supports skills; the bootstrap rules still work without it.
 4. Start using it. See [template/MEMORY.md](template/MEMORY.md) for the
    index format and [template/CURATOR.md](template/CURATOR.md) for how
    curation works — both apply identically to the deployed live copy.

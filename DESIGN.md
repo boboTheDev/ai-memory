@@ -262,10 +262,12 @@ curated Markdown, migrating it into a database later is an import step, not
 a rewrite.
 
 `agenda/` is retrieved separately from `memories/` and isn't part of the
-`MEMORY.md` index (it isn't curated content). When a task might involve
-upcoming dates or scheduling, an agent reads the current month's file
-(`agenda/<this year>/<this month>.md`) and, if looking ahead is relevant,
-next month's — not the whole `agenda/` tree.
+`MEMORY.md` index (it isn't curated content). For a bounded date question,
+read the relevant month files. For an open-ended question about any future
+plans, list agenda month files and read every month from the current month
+onward, filtering out past entries. A bare "memory inbox" prefix is a cue
+to use the memory system for the following question; it does not limit
+retrieval to `inbox/` or request a write.
 
 Once an agent has a relevant file open, `[[wikilinks]]` to other files (see
 "Linking and tagging" below) are a second retrieval path — following a link

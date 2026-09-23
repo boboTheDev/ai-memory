@@ -14,6 +14,12 @@ current project, at `<AI_MEMORY_PATH>`. It is not project memory — it holds
 durable personal, project-business, and technical knowledge worth keeping
 across sessions and tools. Full design: `<AI_MEMORY_PATH>/DESIGN.md`.
 
+When the user starts a request with "memory inbox", treat that as a cue to
+use this memory system for the question that follows. It is not, by itself,
+a request to read only the inbox or to save anything. Use the shared
+`ai-memory` workflow for explicit questions about memory, pending inbox
+items, or agendas.
+
 - At the start of substantial work, if the task might benefit from prior
   knowledge, read `<AI_MEMORY_PATH>/MEMORY.md` (it's small — an index).
   If a listed topic looks relevant, read that specific file. Don't read
@@ -40,8 +46,9 @@ across sessions and tools. Full design: `<AI_MEMORY_PATH>/DESIGN.md`.
   append a one-line dated entry directly to
   `<AI_MEMORY_PATH>/agenda/<year>/<month>.md` (create the year folder/month
   file if they don't exist), following the format in
-  `<AI_MEMORY_PATH>/agenda/README.md`. When a task might involve upcoming
-  dates or scheduling, read the current month's file (and next month's if
-  looking ahead is relevant) — don't scan the whole `agenda/` tree, and
-  don't route dated events through `inbox/candidates.md` instead.
+  `<AI_MEMORY_PATH>/agenda/README.md`. For a bounded date question, read
+  the relevant month files. For "any future agendas" or another open-ended
+  future question, list agenda month files and read every month from the
+  current month onward, filtering out past entries. Don't route dated
+  events through `inbox/candidates.md` instead.
 ```
