@@ -1,9 +1,11 @@
 # Design
 
-> Paths below (`MEMORY.md`, `memories/...`, `inbox/candidates.md`) are
-> relative to the **live data directory** created by `deploy.sh`, not this
-> repo's root. See [README.md](README.md#repo-layout-template-vs-live-data)
-> for the template-vs-live split.
+> Paths below (`MEMORY.md`, `memories/...`, `inbox/candidates.md`,
+> `inbox/manual-inbox/...`) are relative to the **live data directory**
+> created by `deploy.sh`, not this repo's root. This file itself is also
+> deployed there, as `<live>/DESIGN.md`. See
+> [README.md](README.md#repo-layout-template-vs-live-data) for the
+> template-vs-live split.
 
 ## Goal
 

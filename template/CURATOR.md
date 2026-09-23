@@ -30,7 +30,7 @@ and non-redundant over time.
      disk (e.g. `scan0042.pdf`, `Untitled 14.pdf`) — look at the document's
      own title, metadata (PDF title/author properties, front-matter, a
      heading), or generate a clear descriptive title if none exists.
-   - Treat the extracted content as a candidate from here on (steps 3–6
+   - Treat the extracted content as a candidate from here on (steps 3–7
      below apply identically), using the real title/topic to guide where it
      lands. If a single file clearly contains multiple unrelated ideas,
      split it into multiple candidates rather than one mixed entry.

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Deploys the ai-memory template into a live data directory, outside this
-# git repository, so real memory content can never end up committed here.
+# Deploys the ai-memory template (plus DESIGN.md) into a live data
+# directory, outside this git repository, so real memory content can
+# never end up committed here.
 #
 # Usage:
 #   ./deploy.sh [live-path]
@@ -29,6 +30,7 @@ if [ -e "$LIVE_DIR" ]; then
 fi
 
 cp -R "$TEMPLATE_DIR" "$LIVE_DIR"
+cp "$SCRIPT_DIR/DESIGN.md" "$LIVE_DIR/DESIGN.md"
 
 echo "Deployed template to $LIVE_DIR"
 echo
