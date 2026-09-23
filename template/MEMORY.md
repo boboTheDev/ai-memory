@@ -7,6 +7,11 @@ file; don't read everything.
 Full design rationale: [DESIGN.md](DESIGN.md). Curation process:
 [CURATOR.md](CURATOR.md).
 
+Looking for dated events/reminders instead of durable knowledge? That's a
+separate store — see [agenda/README.md](agenda/README.md), and check the
+current month's file, e.g. `agenda/<year>/<month>.md`. Not indexed here;
+it isn't curated content and doesn't belong in this file.
+
 ## Personal
 
 - Health — `memories/personal/health.md`

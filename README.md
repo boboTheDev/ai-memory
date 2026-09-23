@@ -4,7 +4,10 @@ A shared, curated, long-term memory system for Claude Code and Codex CLI. One
 brain, shared by both tools, not tied to any single project. It is a "second
 brain" — technical lessons, project business/decisions, and general personal
 knowledge (health, travel, academic, finance, people, and anything else you
-feed it) — kept small, high-signal, and easy to inspect by hand.
+feed it) — kept small, high-signal, and easy to inspect by hand. It also
+holds a lightweight dated agenda (`agenda/`) for one-off reminders and
+events, kept separate from curated knowledge since they don't fit the same
+durability model — see [DESIGN.md](DESIGN.md#agenda-dated-events-not-curated-knowledge).
 
 It does **not** replace either tool's normal session/working context, and it
 does **not** replace per-project technical memory (e.g. Project Master's
@@ -32,8 +35,9 @@ not a discipline you have to maintain, a directory that simply isn't here.
 `DESIGN.md` (agents are told to read `<live>/DESIGN.md`, so it has to be
 there too, not just at the repo root for humans). `upgrade.sh` keeps that
 same handful of pure-instruction files — `CURATOR.md`,
-`inbox/manual-inbox/README.md`, `DESIGN.md` — in sync on an
-already-deployed live dir later; see "Upgrading instructions" below.
+`inbox/manual-inbox/README.md`, `archive/README.md`, `agenda/README.md`,
+`DESIGN.md` — in sync on an already-deployed live dir later; see
+"Upgrading instructions" below.
 
 ```
 ai-memory/                    (this repo — template + a couple of root files, always safe to push)
@@ -44,9 +48,10 @@ ai-memory/                    (this repo — template + a couple of root files, 
 │   ├── inbox/candidates.md
 │   ├── inbox/manual-inbox/README.md
 │   ├── archive/README.md
+│   ├── agenda/README.md
 │   └── memories/{personal,technical,projects}/...  (open taxonomy — not fixed)
 ├── deploy.sh                  (copies template/ + DESIGN.md → live path, once)
-├── upgrade.sh                  (re-syncs CURATOR.md/manual-inbox README/archive README/DESIGN.md later)
+├── upgrade.sh                  (re-syncs the instruction files above later)
 ├── bootstrap/                  (snippets for each tool's global config)
 ├── DESIGN.md                   (also deployed to the live dir — see above)
 └── README.md                   (repo-only; never deployed)
@@ -59,6 +64,7 @@ ai-memory/                    (this repo — template + a couple of root files, 
 ├── inbox/candidates.md           (real candidates)
 ├── inbox/manual-inbox/           (drop files here by hand; curator digests + deletes)
 ├── archive/                      (superseded canonical content, moved here by curator, never deleted)
+├── agenda/YYYY/MM.md             (dated events/reminders — separate from memories/, no curation gate)
 └── memories/**                   (real curated content — [[linked]] + #tagged by curator)
 ```
 
@@ -106,6 +112,14 @@ commit that.
   discards into canonical topic files under `<live>/memories/` — linking
   related entries with `[[wikilinks]]` and adding `#tags` along the way —
   and logs what it did.
+- To save a dated reminder/event instead (not durable knowledge, just
+  something worth knowing about until a date passes): say **"add to my
+  agenda: ..."**. The agent appends a one-line entry straight to
+  `<live>/agenda/<year>/<month>.md` — no inbox, no curation pass, since
+  there's no durability judgment to make about a date. See
+  [template/agenda/README.md](template/agenda/README.md) for the format.
+  This is not a real calendar — no notifications, just something agents
+  read and reason about.
 - You can also open and edit any file in the live directory by hand at any
   time — it's all plain Markdown.
 
@@ -116,9 +130,10 @@ exists, so it can't be used to push a later improvement out to a live copy
 that's accumulated real content. For that, use [upgrade.sh](upgrade.sh)
 instead, which only overwrites the pure-instruction files in the live
 directory (`CURATOR.md`, `inbox/manual-inbox/README.md`,
-`archive/README.md`, `DESIGN.md`) and never touches real data (`MEMORY.md`,
-`CURATION-LOG.md`, `inbox/candidates.md`, any files a user has dropped in
-`inbox/manual-inbox/`, anything the curator has archived under `archive/`,
+`archive/README.md`, `agenda/README.md`, `DESIGN.md`) and never touches
+real data (`MEMORY.md`, `CURATION-LOG.md`, `inbox/candidates.md`, any files
+a user has dropped in `inbox/manual-inbox/`, anything the curator has
+archived under `archive/`, any dated entries under `agenda/`,
 `memories/**`).
 
 Local machine → server, some folder there:

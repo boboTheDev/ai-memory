@@ -14,6 +14,16 @@ happened in past sessions. It turns rough candidates into durable,
 well-structured canonical memory, and keeps that canonical memory correct
 and non-redundant over time.
 
+`agenda/` is explicitly out of scope for curation — dated events don't go
+through PROMOTE/MERGE/UPDATE/DISCARD judgment (see `DESIGN.md`'s "Agenda"
+section), agents write there directly, and old entries just age out rather
+than being curated or archived. Don't move agenda content into `memories/`
+during a curation pass, and don't discard agenda entries for failing the
+durability test — that test doesn't apply to them. The one exception: if
+something in `agenda/` incidentally reveals a durable fact (not the date
+itself, but a pattern behind it), and the user has separately added that
+as a `memories/` candidate, curate that entry normally.
+
 ## Process
 
 1. Read every entry in `inbox/candidates.md`, and list every file sitting in

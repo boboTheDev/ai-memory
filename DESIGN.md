@@ -1,9 +1,9 @@
 # Design
 
 > Paths below (`MEMORY.md`, `memories/...`, `inbox/candidates.md`,
-> `inbox/manual-inbox/...`) are relative to the **live data directory**
-> created by `deploy.sh`, not this repo's root. This file itself is also
-> deployed there, as `<live>/DESIGN.md`. See
+> `inbox/manual-inbox/...`, `agenda/...`) are relative to the **live data
+> directory** created by `deploy.sh`, not this repo's root. This file
+> itself is also deployed there, as `<live>/DESIGN.md`. See
 > [README.md](README.md#repo-layout-template-vs-live-data) for the
 > template-vs-live split.
 
@@ -14,12 +14,16 @@ CLI. One brain, shared across both tools — not scoped to a single agent, and
 not scoped to a single project. It holds curated knowledge that remains
 useful across sessions: technical lessons, non-technical project
 business/decisions, and general personal knowledge (anything from thesis
-progress to flight details to a durable dietary fact).
+progress to flight details to a durable dietary fact). It also holds a
+lightweight dated agenda (see "Agenda: dated events, not curated
+knowledge" below) for things worth an agent knowing about only until a
+specific date passes.
 
 This is explicitly **not** a replacement for either tool's session/working
 context (current conversation, files being inspected, task state, command
-output, in-flight reasoning) and **not** a replacement for deep per-project
-technical memory such as Project Master's `.project-meta/`.
+output, in-flight reasoning), **not** a replacement for deep per-project
+technical memory such as Project Master's `.project-meta/`, and **not** a
+real calendar app — the agenda has no notifications or alarms; see below.
 
 ## Priorities
 
@@ -158,6 +162,48 @@ that's expensive to search and never actually curated down. The
 staging-then-curation model forces every candidate through an explicit
 promote/merge/discard decision instead.
 
+## Agenda: dated events, not curated knowledge
+
+A dated commitment — "pick someone up at the airport on the 25th," "rent
+due the 28th" — fails the durability test above on purpose: it's a genuine
+one-off, not a reusable fact, and forcing it through PROMOTE/MERGE/UPDATE/
+DISCARD judgment doesn't fit. It isn't garbage either; it's just a
+different kind of thing than everything else in this system, with its own
+lifecycle (relevant until the date passes, then it just ages out — no
+merging, no generalizing, no "does this recur" test).
+
+Rather than stretch the curated-memory model to cover this (or silently
+discard genuinely useful reminders, which is what happens if you try to
+route them through `inbox/candidates.md`), the system has a second,
+parallel store: `agenda/`, structured as one file per month
+(`agenda/YYYY/MM.md`, e.g. `agenda/2026/09.md`), each holding simple
+one-line dated entries. See `agenda/README.md` for the exact format.
+
+Key differences from `memories/`:
+
+- **No curation gate.** Agents append directly to the relevant month file
+  when asked (e.g. "add to my agenda: ..."). There's no promote/discard
+  judgment call to make about whether a date is durable — it's just a
+  fact, right or wrong, not more or less worth keeping.
+- **No inbox staging.** `inbox/candidates.md` and `inbox/manual-inbox/`
+  exist because canonical `memories/` writes need deliberate judgment
+  first; agenda entries don't need that gate, so there's no staging step.
+- **Expires by design, not by curator judgment.** Old month files are
+  simply deleted once everything in them is past and no longer useful —
+  no audit trail requirement like `CURATION-LOG.md`, since nothing was
+  promoted or discarded, it just aged out.
+- **Not a notification system.** This is inert text an agent reads and
+  reasons about when you're talking to it — "what's coming up," "does this
+  conflict with X." It does not alert you on its own. For real
+  reminders/notifications, use an actual calendar (e.g. a connected Google
+  Calendar), not this.
+- **If a dated event reveals a durable fact, that's a separate `memories/`
+  candidate.** E.g. a one-off airport pickup is agenda-only, but "I always
+  need to schedule buffer time around international flights" would be
+  worth a `inbox/candidates.md` entry in its own right — the curator
+  distills the durable pattern out; the agenda entry still just ages out
+  once the date passes.
+
 ## Read/write permissions
 
 Normal agent session (Claude Code or Codex, working on anything):
@@ -168,8 +214,11 @@ Normal agent session (Claude Code or Codex, working on anything):
 | Read/grep `memories/**` | Yes |
 | Append to `inbox/candidates.md` | Yes |
 | Place a file in `inbox/manual-inbox/` | Yes (this is a manual/human step in practice, but nothing stops an agent doing it on request) |
+| Read `agenda/**` | Yes |
+| Append a dated entry to `agenda/<year>/<month>.md` (creating the file/folder if needed) | Yes — no inbox staging, no curator gate; see "Agenda" above |
+| Delete a stale `agenda/<year>/<month>.md` when the user asks for cleanup | Yes — agenda has no curator/log requirement, unlike `memories/`/`manual-inbox/` deletions |
 | Write/edit canonical `memories/**` directly | No |
-| Delete anything | No |
+| Delete anything under `memories/`, `inbox/`, or `archive/` | No |
 
 Curator (invoked deliberately, e.g. `claude "curate my memory per
 ai-memory/CURATOR.md"`):
@@ -211,6 +260,12 @@ deferred — not rejected — until curated content grows enough that filesystem
 search genuinely stops working well. Because canonical memory is already
 curated Markdown, migrating it into a database later is an import step, not
 a rewrite.
+
+`agenda/` is retrieved separately from `memories/` and isn't part of the
+`MEMORY.md` index (it isn't curated content). When a task might involve
+upcoming dates or scheduling, an agent reads the current month's file
+(`agenda/<this year>/<this month>.md`) and, if looking ahead is relevant,
+next month's — not the whole `agenda/` tree.
 
 Once an agent has a relevant file open, `[[wikilinks]]` to other files (see
 "Linking and tagging" below) are a second retrieval path — following a link

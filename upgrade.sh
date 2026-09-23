@@ -12,22 +12,25 @@
 # Default live-path: ~/.ai-memory
 #
 # Only overwrites files that are pure instructions/process, never real
-# data: template/CURATOR.md, template/inbox/manual-inbox/README.md and
-# template/archive/README.md (those two folders hold real user-dropped or
-# curator-archived content, but their READMEs are pure instructions, same
-# category as CURATOR.md), and repo-root DESIGN.md (deploy.sh copies it
-# into the live dir too, since CURATOR.md and the bootstrap snippets both
-# point agents at <live>/DESIGN.md). README.md is the only repo-root doc
-# that stays repo-only.
+# data: template/CURATOR.md, template/inbox/manual-inbox/README.md,
+# template/archive/README.md, and template/agenda/README.md (those three
+# folders hold real user-dropped, curator-archived, or dated-event content,
+# but their READMEs are pure instructions, same category as CURATOR.md),
+# and repo-root DESIGN.md (deploy.sh copies it into the live dir too,
+# since CURATOR.md and the bootstrap snippets both point agents at
+# <live>/DESIGN.md). README.md is the only repo-root doc that stays
+# repo-only.
 #
 # Never touches (real data, even though it started as a template seed):
 #   MEMORY.md, CURATION-LOG.md, inbox/candidates.md, inbox/manual-inbox/*
-#   (except README.md), memories/**, archive/* (except README.md)
+#   (except README.md), memories/**, archive/* (except README.md),
+#   agenda/** (except README.md)
 #
-# Note: template/archive/ is untracked-empty in a fresh clone unless it
-# holds at least one file (git doesn't track empty directories) — this
-# script and deploy.sh both assume template/archive/README.md exists so
-# the folder itself is always present to seed/sync.
+# Note: template/archive/ and template/agenda/ are untracked-empty in a
+# fresh clone unless they hold at least one file (git doesn't track empty
+# directories) — this script and deploy.sh both assume
+# template/archive/README.md and template/agenda/README.md exist so both
+# folders are always present to seed/sync.
 #
 # Typical flow:
 #   1. Edit template/ (or DESIGN.md) in this repo, commit, push.
@@ -49,6 +52,7 @@ INSTRUCTION_FILES=(
   "template/CURATOR.md:CURATOR.md"
   "template/inbox/manual-inbox/README.md:inbox/manual-inbox/README.md"
   "template/archive/README.md:archive/README.md"
+  "template/agenda/README.md:agenda/README.md"
   "DESIGN.md:DESIGN.md"
 )
 
@@ -84,7 +88,8 @@ done
 
 echo
 echo "Done. Untouched (real data): MEMORY.md, CURATION-LOG.md, inbox/candidates.md,"
-echo "inbox/manual-inbox/* (except README.md), archive/* (except README.md), memories/**"
+echo "inbox/manual-inbox/* (except README.md), archive/* (except README.md),"
+echo "agenda/** (except README.md), memories/**"
 echo
 echo "Note: bootstrap/ snippets are pasted by hand into ~/.claude/CLAUDE.md and"
 echo "~/.codex/AGENTS.md (see bootstrap/*.md in this repo) — they are not copied"

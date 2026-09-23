@@ -34,4 +34,14 @@ across sessions and tools. Full design: `<AI_MEMORY_PATH>/DESIGN.md`.
   `<AI_MEMORY_PATH>/CURATOR.md`, run when the user explicitly asks for
   curation) writes canonical memory, digests `inbox/manual-inbox/` files,
   and maintains `[[wikilinks]]`/`#tags` between entries.
+- Separately, `<AI_MEMORY_PATH>/agenda/` holds dated events/reminders
+  (e.g. "pick up X on the 25th") — not curated knowledge, no inbox, no
+  curation gate. When the user says something like "add to my agenda: ...",
+  append a one-line dated entry directly to
+  `<AI_MEMORY_PATH>/agenda/<year>/<month>.md` (create the year folder/month
+  file if they don't exist), following the format in
+  `<AI_MEMORY_PATH>/agenda/README.md`. When a task might involve upcoming
+  dates or scheduling, read the current month's file (and next month's if
+  looking ahead is relevant) — don't scan the whole `agenda/` tree, and
+  don't route dated events through `inbox/candidates.md` instead.
 ```
