@@ -25,8 +25,13 @@ across sessions and tools. Full design: `<AI_MEMORY_PATH>/DESIGN.md`.
   `<AI_MEMORY_PATH>/inbox/candidates.md`, following the format at the top
   of that file. Keep it cheap — a few lines, no polishing, don't interrupt
   the current task to do this well. Include a proposed topic tag.
+- The user may also drop whole files (notes, PDFs, exports) into
+  `<AI_MEMORY_PATH>/inbox/manual-inbox/` by hand for the same purpose — you
+  don't need to do anything with that folder during normal work; it's
+  processed by curation, not on the fly.
 - Never write directly to `<AI_MEMORY_PATH>/memories/**` during normal
   work. Only the deliberate curation process (see
   `<AI_MEMORY_PATH>/CURATOR.md`, run when the user explicitly asks for
-  curation) writes canonical memory.
+  curation) writes canonical memory, digests `inbox/manual-inbox/` files,
+  and maintains `[[wikilinks]]`/`#tags` between entries.
 ```

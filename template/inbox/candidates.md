@@ -5,6 +5,10 @@ the user says "save this to memory inbox" (or similar). Keep entries cheap
 and rough — no polishing, this should cost almost no time or context. The
 curator reads and processes these later; see `../CURATOR.md`.
 
+For whole files (notes, PDFs, exports) instead of a short text entry, drop
+them in `manual-inbox/` instead — see `manual-inbox/README.md`. The curator
+processes both in the same pass.
+
 Do not edit or delete other entries when appending. Do not write directly to
 `../memories/` from a normal working session.
 

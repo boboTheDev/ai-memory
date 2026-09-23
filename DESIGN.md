@@ -37,7 +37,8 @@ Working context
 &nbsp;&nbsp;&nbsp;&nbsp;↓
 Potentially reusable discovery
 &nbsp;&nbsp;&nbsp;&nbsp;↓
-Candidate memory (`inbox/candidates.md`)
+Candidate memory (`inbox/candidates.md`) — or a raw file dropped in
+`inbox/manual-inbox/`
 &nbsp;&nbsp;&nbsp;&nbsp;↓
 Curator (deliberate, on-demand)
 &nbsp;&nbsp;&nbsp;&nbsp;↓
@@ -50,6 +51,18 @@ ask for it, not automatically) decides what actually deserves to survive,
 and writes canonical memory. This keeps day-to-day writes cheap while
 keeping canonical memory high-signal.
 
+`inbox/manual-inbox/` is a second, parallel staging path for the same
+pipeline, for material an agent never touched: notes, PDFs, exports, or
+other files placed there by hand. It feeds the same curator pass as
+`candidates.md` rather than a separate process — the curator analyzes each
+file, extracts the durable core (not a full transcription), determines the
+file's real title (from its content/metadata, not its on-disk filename),
+and writes that into canonical memory exactly as it would any other
+candidate. The original file is deleted once digested (or discarded); see
+`CURATOR.md` for the full process and the log-only audit trail this implies
+(no copy of the original is retained — `CURATION-LOG.md` records the
+original filename and identified title as the only trace).
+
 ## Why not a fixed category list
 
 An earlier draft of this design used five fixed categories (solutions,
@@ -59,27 +72,43 @@ this system is meant to be a general second brain — thesis, flights, meals,
 workouts, project business decisions, technical lessons, all of it. Fixed
 categories from one domain don't fit knowledge from every domain.
 
-Instead, canonical memory is organized as an **open topic taxonomy** under
-three top-level axes:
+A later revision also dropped a fixed three-axis split (`personal/`,
+`projects/`, `technical/`) for the same reason: forcing every topic through
+three predetermined buckets is just a coarser version of the same problem.
+Some knowledge is genuinely cross-cutting (a project that's also a health
+routine, a person who's also a recurring technical collaborator) or deep
+enough to want its own multi-file subtree, and a fixed top level fights
+that.
 
-- `memories/personal/` — health, academic, travel, finance, preferences,
-  people, and anything else about your life. Not project- or tool-specific.
-- `memories/projects/<project-name>.md` — non-technical project knowledge:
-  business logic, decisions and their rationale, periodic summaries. One
-  file per project by default. This is deliberately a thin layer, not a
-  replacement for a project's own deep technical memory (e.g. Project
-  Master's `.project-meta/`) — it's what you'd want to recall about a
-  project from *outside* that project's own directory.
-  Not created until a project actually has something worth remembering.
-- `memories/technical/` — solutions, techniques, and environment facts that
-  aren't tied to one project (e.g. durable server/infra facts, reusable
-  debugging techniques).
+Canonical memory under `memories/` is instead a **fully open taxonomy**:
+any folder and file structure, at any depth, that best fits the knowledge
+being stored. `personal/`, `projects/<name>/`, and `technical/` remain
+reasonable, commonly-useful top-level groupings — the seed template ships
+with them populated — but they are a starting convention, not a schema.
+The curator (see below) is free to:
 
-New topic files are created **by the curator, on demand**, not by working
-agents mid-session. A working agent proposes a topic tag on its candidate
-entry; the curator decides whether that becomes a new file, folds into an
-existing one, or doesn't warrant a file at all. This keeps the taxonomy from
-sprawling into one file per trivial topic.
+- create new top-level topic areas alongside them when a topic doesn't fit
+  any existing one well (e.g. `memories/recipes/`, `memories/hobby-3d-printing/`)
+- create subfolders under any topic once it's grown deep enough to warrant
+  splitting (e.g. `memories/projects/<name>/architecture.md` plus
+  `memories/projects/<name>/decisions.md` instead of one flat file)
+- rename, move, or restructure existing files/folders when a better
+  organization becomes obvious, as long as `MEMORY.md` is updated to match
+
+The only hard constraints are: everything canonical still lives under
+`memories/` (so retrieval by grepping that one directory keeps working),
+and `MEMORY.md` stays an accurate index of whatever structure currently
+exists. Within that, structure follows the knowledge rather than the
+knowledge being forced into a predetermined structure.
+
+New topic files and folders are created **by the curator, on demand**, not
+by working agents mid-session (working agents stage rough entries in the
+inbox instead — see "Core philosophy" above). A working agent proposes a
+topic tag on its candidate entry; the curator decides whether that becomes
+a new file, a new folder, folds into an existing file, or doesn't warrant
+a file at all. Curation still applies judgment about when a new file
+earns its place (see `CURATOR.md`) — this change removes the fixed-shape
+constraint, not the judgment call.
 
 ## What's worth remembering
 
@@ -136,6 +165,7 @@ Normal agent session (Claude Code or Codex, working on anything):
 | Read `MEMORY.md` | Yes |
 | Read/grep `memories/**` | Yes |
 | Append to `inbox/candidates.md` | Yes |
+| Place a file in `inbox/manual-inbox/` | Yes (this is a manual/human step in practice, but nothing stops an agent doing it on request) |
 | Write/edit canonical `memories/**` directly | No |
 | Delete anything | No |
 
@@ -144,19 +174,23 @@ ai-memory/CURATOR.md"`):
 
 | Action | Allowed |
 | --- | --- |
-| Read inbox and canonical memory | Yes |
+| Read inbox (including `manual-inbox/` file contents) and canonical memory | Yes |
 | Promote a candidate into canonical memory | Yes |
 | Merge duplicates, update existing entries | Yes |
 | Generalize overly specific candidates | Yes |
-| Create a new topic file when genuinely warranted | Yes |
+| Create a new topic file or folder when genuinely warranted | Yes |
+| Add `[[wikilinks]]` and `#tags` to canonical entries | Yes |
 | Archive obsolete canonical content | Yes |
 | Clear processed entries from the inbox | Yes |
+| Delete a file from `inbox/manual-inbox/` once fully digested (or discarded) | Yes |
 | Append one line per action to `CURATION-LOG.md` | Yes (required) |
 
 The curator never silently deletes. Discarded candidates and archived
 canonical content are both recorded in `CURATION-LOG.md` with a one-line
 reason, so every removal has an audit trail without needing a full
-versioning system. See [CURATOR.md](CURATOR.md).
+versioning system. This includes files deleted from `manual-inbox/` after
+digestion — the log line is the only record of the original file, since no
+copy is retained. See [CURATOR.md](CURATOR.md).
 
 ## Retrieval
 
@@ -176,6 +210,26 @@ search genuinely stops working well. Because canonical memory is already
 curated Markdown, migrating it into a database later is an import step, not
 a rewrite.
 
+Once an agent has a relevant file open, `[[wikilinks]]` to other files (see
+"Linking and tagging" below) are a second retrieval path — following a link
+found in a file that's already known to be relevant is often faster than a
+fresh grep, especially for cross-cutting topics that don't share obvious
+keywords.
+
+## Linking and tagging
+
+Canonical files link to each other with Obsidian-style `[[wikilinks]]`
+(target = path under `memories/`, no extension, e.g.
+`[[technical/solutions]]`) and carry `#tags` for topics likely to be
+referenced again. Both are maintained by the curator, not working agents —
+see `CURATOR.md`'s "Linking and tagging" section for the exact conventions.
+Linking is favored wherever genuinely relevant but never mandatory; an
+unrelated entry should stay plain rather than have a forced link added to
+satisfy the convention. This is metadata layered on top of the plain-files
+storage model, not a structural requirement — nothing here needs an actual
+Obsidian vault or app; it's just a link/tag syntax convention that plain
+Markdown, grep, and (if you choose to) Obsidian itself can all read.
+
 ## Concurrency
 
 Single-agent-at-a-time usage is assumed (confirmed with the user). No file
@@ -188,3 +242,6 @@ revisit before it causes a lost write.
 a growing dump. As a soft rule, split a canonical topic file once it grows
 past roughly 150 lines rather than letting it grow indefinitely — this keeps
 grep-based retrieval fast without needing to decide a hard limit upfront.
+A split can be a new sibling file, or, once a topic has enough substructure
+of its own, a subfolder of related files replacing the single file — the
+curator picks whichever shape best fits, per the open taxonomy above.

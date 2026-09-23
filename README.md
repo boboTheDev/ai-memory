@@ -34,7 +34,8 @@ ai-memory/                    (this repo — template only, always safe to push)
 │   ├── CURATOR.md
 │   ├── CURATION-LOG.md
 │   ├── inbox/candidates.md
-│   └── memories/{personal,technical,projects}/...
+│   ├── inbox/manual-inbox/README.md
+│   └── memories/{personal,technical,projects}/...  (open taxonomy — not fixed)
 ├── deploy.sh                  (copies template/ → live path, once)
 ├── bootstrap/                  (snippets for each tool's global config)
 ├── DESIGN.md
@@ -45,7 +46,8 @@ ai-memory/                    (this repo — template only, always safe to push)
 ├── CURATOR.md
 ├── CURATION-LOG.md              (real audit trail)
 ├── inbox/candidates.md           (real candidates)
-└── memories/{personal,technical,projects}/...  (real curated content)
+├── inbox/manual-inbox/           (drop files here by hand; curator digests + deletes)
+└── memories/**                   (real curated content — [[linked]] + #tagged by curator)
 ```
 
 ## Deploying on a new machine
@@ -80,10 +82,18 @@ commit that.
   memory inbox"** (or "save to memory"). The agent appends a short candidate
   entry to `<live>/inbox/candidates.md` — cheap, no polishing, doesn't break
   flow.
+- To save a whole file (a note, a PDF, an export, anything not worth
+  typing up as a text entry): drop it directly in
+  `<live>/inbox/manual-inbox/` yourself. Nothing reads it until curation
+  runs — the curator analyzes it, extracts the durable core, figures out
+  its real title, writes it into canonical memory, and deletes the
+  original.
 - Periodically, run curation deliberately: e.g.
   `claude "curate my memory per ~/.ai-memory/CURATOR.md"`. The curator
-  reviews the inbox, promotes/merges/discards into canonical topic files
-  under `<live>/memories/`, and logs what it did.
+  reviews `inbox/candidates.md` and `inbox/manual-inbox/`, promotes/merges/
+  discards into canonical topic files under `<live>/memories/` — linking
+  related entries with `[[wikilinks]]` and adding `#tags` along the way —
+  and logs what it did.
 - You can also open and edit any file in the live directory by hand at any
   time — it's all plain Markdown.
 

@@ -12,12 +12,14 @@
 # Default live-path: ~/.ai-memory
 #
 # Only overwrites files under template/ that are pure instructions/process,
-# never real data: currently just CURATOR.md (the only such file that
-# deploy.sh actually copies into the live dir — DESIGN.md/README.md are
-# repo-root docs about the system and are never deployed at all).
+# never real data: CURATOR.md, and inbox/manual-inbox/README.md (the
+# manual-inbox folder itself holds real user-dropped files, but its README
+# is pure instructions, same category as CURATOR.md). DESIGN.md/README.md
+# are repo-root docs about the system and are never deployed at all.
 #
 # Never touches (real data, even though it started as a template seed):
-#   MEMORY.md, CURATION-LOG.md, inbox/candidates.md, memories/**
+#   MEMORY.md, CURATION-LOG.md, inbox/candidates.md, inbox/manual-inbox/*
+#   (except README.md), memories/**
 #
 # Typical flow:
 #   1. Edit template/ in this repo, commit, push.
@@ -35,6 +37,7 @@ LIVE_DIR="${1:-$HOME/.ai-memory}"
 # is live data once deployed and must never be overwritten here.
 INSTRUCTION_FILES=(
   "CURATOR.md"
+  "inbox/manual-inbox/README.md"
 )
 
 if [ ! -d "$TEMPLATE_DIR" ]; then
@@ -59,6 +62,7 @@ for f in "${INSTRUCTION_FILES[@]}"; do
   if [ -f "$dst" ] && cmp -s "$src" "$dst"; then
     echo "  unchanged: $f"
   else
+    mkdir -p "$(dirname "$dst")"
     cp "$src" "$dst"
     echo "  updated:   $f"
   fi

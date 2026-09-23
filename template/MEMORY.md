@@ -31,8 +31,16 @@ something worth remembering. None yet.
 - Solutions — `memories/technical/solutions.md`
 - Techniques — `memories/technical/techniques.md`
 
+<!-- CURATOR: the sections above (Personal/Projects/Technical) are a
+     starting convention, not a fixed schema. Add new top-level sections
+     here freely when a topic doesn't fit any of them — memories/ has no
+     fixed taxonomy. Keep this index in sync with whatever structure
+     (files or folders, at any depth) actually exists under memories/. -->
+
 ---
 
-New topic files are created by the curator on demand, not by working
-agents. If nothing above fits, propose a topic tag on your candidate entry
-in `inbox/candidates.md` and let curation decide.
+New topic files and folders are created by the curator on demand, not by
+working agents. If nothing above fits, propose a topic tag on your
+candidate entry in `inbox/candidates.md` and let curation decide — the
+curator may fold it into an existing file, or create a new file, folder,
+or top-level section, whatever best fits.
